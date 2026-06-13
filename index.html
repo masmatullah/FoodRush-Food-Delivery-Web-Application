@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FoodRush – Fast Delivery</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<!-- LOADING SPINNER -->
+<div id="loader" class="loader-overlay">
+  <div class="spinner-ring"><div></div><div></div><div></div><div></div></div>
+  <p class="loader-text">FoodRush</p>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo"><span class="logo-icon">🍔</span><span>FoodRush</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" class="nav-link active" onclick="closeMobileMenu()">Home</a></li>
+      <li><a href="#menu" class="nav-link" onclick="closeMobileMenu()">Menu</a></li>
+      <li><a href="#track" class="nav-link" onclick="closeMobileMenu()">Track Order</a></li>
+      <li><a href="#reviews" class="nav-link" onclick="closeMobileMenu()">Reviews</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn"><i class="fas fa-moon"></i></button>
+      <button class="icon-btn" onclick="openWishlist()"><i class="fas fa-heart"></i><span class="badge" id="wishlistBadge">0</span></button>
+      <button class="icon-btn" onclick="openCart()"><i class="fas fa-shopping-bag"></i><span class="badge" id="cartBadge">0</span></button>
+      <button class="btn-primary" onclick="openAuthModal('login')">Login</button>
+      <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-badge">🔥 Free delivery on first order</div>
+    <h1 class="hero-title">Cravings Delivered<br/><span class="highlight">In Minutes</span></h1>
+    <p class="hero-sub">From your favorite local restaurants straight to your door. Hot, fresh, always on time.</p>
+    <div class="hero-search">
+      <i class="fas fa-map-marker-alt search-icon"></i>
+      <input type="text" placeholder="Enter your delivery address..." class="search-input"/>
+      <button class="btn-primary" onclick="showToast('📍 Finding restaurants near you...','info')">Find Food</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><strong>500+</strong><span>Restaurants</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><strong>30min</strong><span>Avg Delivery</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><strong>50k+</strong><span>Happy Customers</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-plate">
+      <div class="plate-ring plate-ring-1"></div>
+      <div class="plate-ring plate-ring-2"></div>
+      <div class="plate-emoji">🍕</div>
+    </div>
+    <div class="float-card card-top"><span>🎉</span><div><strong>Order Placed!</strong><small>Est. 25 min</small></div></div>
+    <div class="float-card card-bottom"><span>⭐</span><div><strong>4.9 Rating</strong><small>2.3k reviews</small></div></div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories-section">
+  <div class="container">
+    <h2 class="section-title">Browse <span>Categories</span></h2>
+    <div class="categories-grid">
+      <div class="cat-card" onclick="filterMenu('pizza')"><span>🍕</span><span>Pizza</span></div>
+      <div class="cat-card" onclick="filterMenu('burger')"><span>🍔</span><span>Burgers</span></div>
+      <div class="cat-card" onclick="filterMenu('sushi')"><span>🍣</span><span>Sushi</span></div>
+      <div class="cat-card" onclick="filterMenu('pasta')"><span>🍝</span><span>Pasta</span></div>
+      <div class="cat-card" onclick="filterMenu('salad')"><span>🥗</span><span>Salads</span></div>
+      <div class="cat-card" onclick="filterMenu('dessert')"><span>🍰</span><span>Desserts</span></div>
+      <div class="cat-card" onclick="filterMenu('drinks')"><span>🥤</span><span>Drinks</span></div>
+      <div class="cat-card" onclick="filterMenu('all')"><span>🍽️</span><span>All</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu-section" id="menu">
+  <div class="container">
+    <h2 class="section-title">Popular <span>Picks</span></h2>
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+</section>
+
+<!-- ORDER TRACKING -->
+<section class="tracking-section" id="track">
+  <div class="container">
+    <h2 class="section-title">Track Your <span>Order</span></h2>
+    <div class="tracking-card">
+      <div class="track-input-row">
+        <input type="text" id="trackInput" placeholder="Enter Order ID (e.g. FR-2024-001)" class="track-input"/>
+        <button class="btn-primary" onclick="trackOrder()">Track</button>
+      </div>
+      <div id="trackingResult" class="tracking-result hidden">
+        <div class="order-meta">
+          <div class="order-info"><span class="order-id-label">Order ID</span><strong id="trackOrderId">–</strong></div>
+          <div class="order-info"><span class="order-id-label">Estimated Time</span><strong id="trackETA">–</strong></div>
+          <div class="order-info"><span class="order-id-label">Status</span><strong id="trackStatus" class="status-badge">–</strong></div>
+        </div>
+        <div class="track-steps">
+          <div class="track-step" id="step1"><div class="step-icon">✅</div><div class="step-line"></div><span>Order Placed</span></div>
+          <div class="track-step" id="step2"><div class="step-icon">👨‍🍳</div><div class="step-line"></div><span>Preparing</span></div>
+          <div class="track-step" id="step3"><div class="step-icon">🛵</div><div class="step-line"></div><span>On the Way</span></div>
+          <div class="track-step" id="step4"><div class="step-icon">🏠</div><div class="step-line"></div><span>Delivered</span></div>
+        </div>
+        <div class="rider-card">
+          <div class="rider-avatar">👨‍🦱</div>
+          <div class="rider-info"><strong>Ali Raza</strong><small>Your Delivery Rider</small></div>
+          <a href="tel:+923001234567" class="rider-call"><i class="fas fa-phone"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section" id="reviews">
+  <div class="container">
+    <h2 class="section-title">Customer <span>Reviews</span></h2>
+    <div class="reviews-grid" id="reviewsGrid"></div>
+    <div class="review-form-card">
+      <h3>Leave a Review</h3>
+      <div class="star-picker" id="starPicker">
+        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+      </div>
+      <input type="text" id="reviewName" placeholder="Your name" class="review-input"/>
+      <textarea id="reviewText" placeholder="Share your experience..." class="review-textarea" rows="3"></textarea>
+      <button class="btn-primary" onclick="submitReview()">Submit Review</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">🍔 FoodRush</a>
+      <p>Delicious food, lightning fast.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+      </div>
+    </div>
+    <div class="footer-links"><h4>Company</h4><a href="#">About Us</a><a href="#">Careers</a><a href="#">Blog</a></div>
+    <div class="footer-links"><h4>Help</h4><a href="#">FAQ</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+    <div class="footer-links"><h4>Get the App</h4><a href="#"><i class="fab fa-apple"></i> App Store</a><a href="#"><i class="fab fa-google-play"></i> Google Play</a></div>
+  </div>
+  <div class="footer-bottom">© 2024 FoodRush. All rights reserved.</div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal" onclick="closeOnOverlay(event,'authModal')">
+  <div class="modal auth-modal">
+    <button class="modal-close" onclick="closeModal('authModal')"><i class="fas fa-times"></i></button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Login</button>
+      <button class="auth-tab" id="signupTab" onclick="switchAuth('signup')">Sign Up</button>
+    </div>
+    <div id="loginForm" class="auth-form">
+      <div class="auth-header"><div class="auth-icon">👋</div><h2>Welcome Back</h2><p>Sign in to your account</p></div>
+      <div class="form-group"><label>Email</label><div class="input-wrap"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="you@example.com"/></div></div>
+      <div class="form-group"><label>Password</label><div class="input-wrap"><i class="fas fa-lock"></i><input type="password" id="loginPass" placeholder="••••••••"/><button class="toggle-pass" onclick="togglePassword('loginPass',this)"><i class="fas fa-eye"></i></button></div></div>
+      <div class="form-options"><label class="checkbox-label"><input type="checkbox"/> Remember me</label><a href="#" onclick="showToast('📧 Reset link sent!','success')">Forgot password?</a></div>
+      <button class="btn-primary full-width" onclick="handleLogin()">Sign In</button>
+      <div class="social-auth"><span>or continue with</span>
+        <div class="social-btns">
+          <button onclick="socialLogin('Google')"><i class="fab fa-google"></i> Google</button>
+          <button onclick="socialLogin('Facebook')"><i class="fab fa-facebook"></i> Facebook</button>
+        </div>
+      </div>
+    </div>
+    <div id="signupForm" class="auth-form hidden">
+      <div class="auth-header"><div class="auth-icon">🚀</div><h2>Create Account</h2><p>Join thousands of food lovers</p></div>
+      <div class="form-group"><label>Full Name</label><div class="input-wrap"><i class="fas fa-user"></i><input type="text" id="signupName" placeholder="Ahmad Ali"/></div></div>
+      <div class="form-group"><label>Email</label><div class="input-wrap"><i class="fas fa-envelope"></i><input type="email" id="signupEmail" placeholder="you@example.com"/></div></div>
+      <div class="form-group"><label>Password</label><div class="input-wrap"><i class="fas fa-lock"></i><input type="password" id="signupPass" placeholder="Min 8 characters"/><button class="toggle-pass" onclick="togglePassword('signupPass',this)"><i class="fas fa-eye"></i></button></div></div>
+      <div class="form-group"><label><input type="checkbox" id="agreeTerms"/> I agree to <a href="#">Terms &amp; Privacy</a></label></div>
+      <button class="btn-primary full-width" onclick="handleSignup()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- WISHLIST MODAL -->
+<div class="modal-overlay" id="wishlistModal" onclick="closeOnOverlay(event,'wishlistModal')">
+  <div class="modal side-modal">
+    <div class="modal-header"><h2><i class="fas fa-heart"></i> Wishlist</h2><button class="modal-close" onclick="closeModal('wishlistModal')"><i class="fas fa-times"></i></button></div>
+    <div id="wishlistItems" class="side-list"></div>
+    <div id="wishlistEmpty" class="empty-state"><div class="empty-icon">💔</div><p>Your wishlist is empty</p><button class="btn-primary" onclick="closeModal('wishlistModal')">Browse Menu</button></div>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div class="modal-overlay" id="cartModal" onclick="closeOnOverlay(event,'cartModal')">
+  <div class="modal side-modal">
+    <div class="modal-header"><h2><i class="fas fa-shopping-bag"></i> Your Cart</h2><button class="modal-close" onclick="closeModal('cartModal')"><i class="fas fa-times"></i></button></div>
+    <div id="cartItems" class="side-list"></div>
+    <div id="cartEmpty" class="empty-state"><div class="empty-icon">🛒</div><p>Your cart is empty</p><button class="btn-primary" onclick="closeModal('cartModal')">Add Items</button></div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-summary">
+        <div class="summary-row"><span>Subtotal</span><span id="cartSubtotal">Rs 0</span></div>
+        <div class="summary-row"><span>Delivery</span><span>Rs 50</span></div>
+        <div class="summary-row total"><span>Total</span><span id="cartTotal">Rs 50</span></div>
+      </div>
+      <button class="btn-primary full-width" onclick="openCheckout()">Proceed to Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutModal" onclick="closeOnOverlay(event,'checkoutModal')">
+  <div class="modal checkout-modal">
+    <button class="modal-close" onclick="closeModal('checkoutModal')"><i class="fas fa-times"></i></button>
+    <h2 class="checkout-title"><i class="fas fa-receipt"></i> Checkout</h2>
+    <div class="checkout-grid">
+      <div class="checkout-left">
+        <div class="checkout-section">
+          <h3>Delivery Address</h3>
+          <div class="form-group"><div class="input-wrap"><i class="fas fa-user"></i><input type="text" placeholder="Full Name" id="coName"/></div></div>
+          <div class="form-group"><div class="input-wrap"><i class="fas fa-phone"></i><input type="tel" placeholder="Phone Number" id="coPhone"/></div></div>
+          <div class="form-group"><div class="input-wrap"><i class="fas fa-map-marker-alt"></i><input type="text" placeholder="Street Address" id="coAddress"/></div></div>
+          <div class="form-row">
+            <div class="form-group"><div class="input-wrap"><i class="fas fa-city"></i><input type="text" placeholder="City"/></div></div>
+            <div class="form-group"><div class="input-wrap"><i class="fas fa-map-pin"></i><input type="text" placeholder="ZIP Code"/></div></div>
+          </div>
+        </div>
+        <div class="checkout-section">
+          <h3>Payment Method</h3>
+          <div class="payment-options">
+            <label class="payment-opt active" onclick="selectPayment(this)"><input type="radio" name="pay" value="card" checked/><i class="fas fa-credit-card"></i><span>Credit Card</span></label>
+            <label class="payment-opt" onclick="selectPayment(this)"><input type="radio" name="pay" value="cash"/><i class="fas fa-money-bill"></i><span>Cash on Delivery</span></label>
+            <label class="payment-opt" onclick="selectPayment(this)"><input type="radio" name="pay" value="easypaisa"/><i class="fas fa-mobile-alt"></i><span>EasyPaisa</span></label>
+          </div>
+          <div id="cardFields">
+            <div class="form-group"><div class="input-wrap"><i class="fas fa-credit-card"></i><input type="text" placeholder="Card Number" maxlength="19" oninput="formatCard(this)"/></div></div>
+            <div class="form-row">
+              <div class="form-group"><div class="input-wrap"><i class="fas fa-calendar"></i><input type="text" placeholder="MM / YY" maxlength="7"/></div></div>
+              <div class="form-group"><div class="input-wrap"><i class="fas fa-lock"></i><input type="text" placeholder="CVV" maxlength="3"/></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="checkout-right">
+        <div class="order-summary-card">
+          <h3>Order Summary</h3>
+          <div id="checkoutItems" class="checkout-items-list"></div>
+          <div class="summary-row"><span>Subtotal</span><span id="coSubtotal">Rs 0</span></div>
+          <div class="summary-row"><span>Delivery Fee</span><span>Rs 50</span></div>
+          <div class="summary-row"><span>Discount</span><span class="green">-Rs 0</span></div>
+          <div class="promo-row"><input type="text" id="promoCode" placeholder="Promo code" class="promo-input"/><button onclick="applyPromo()">Apply</button></div>
+          <div class="summary-row total"><span>Total</span><span id="coTotal">Rs 50</span></div>
+          <button class="btn-primary full-width place-order-btn" onclick="placeOrder()"><i class="fas fa-check-circle"></i> Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ITEM DETAIL MODAL -->
+<div class="modal-overlay" id="itemModal" onclick="closeOnOverlay(event,'itemModal')">
+  <div class="modal item-modal">
+    <button class="modal-close" onclick="closeModal('itemModal')"><i class="fas fa-times"></i></button>
+    <div class="item-modal-content" id="itemModalContent"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
